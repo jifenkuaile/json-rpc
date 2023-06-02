@@ -20,6 +20,8 @@ const (
 //
 // RPCClient is created using the factory function NewClient().
 type RPCClient interface {
+	ChangeEndpoint(endpoint string) RPCClient
+
 	// Call is used to send a JSON-RPC request to the server endpoint.
 	//
 	// The spec states, that params can only be an array or an object, no primitive values.
@@ -345,6 +347,11 @@ func NewClientWithOpts(endpoint string, opts *RPCClientOpts) RPCClient {
 	rpcClient.defaultRequestID = opts.DefaultRequestID
 
 	return rpcClient
+}
+
+func (client *rpcClient) ChangeEndpoint(endpoint string) RPCClient {
+	client.endpoint = endpoint
+	return client
 }
 
 func (client *rpcClient) Call(ctx context.Context, method string, params ...interface{}) (*RPCResponse, error) {
